@@ -1,14 +1,22 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../stylesheets/postfeed.css";
 import "../stylesheets/commentform.css";
 import InitialCircle from './InitialCircle';
 
 function NewComment({ postId, addComment }) {
 	const [comment, setComment] = useState({ content: "" });
-	const [contactId] = useState(1);
-	const [author] = useState({ firstName: "", lastName: "" });
-
+	const [author, setAuthor] = useState(null);
+	
+	useEffect(() => {
+		const fetchContact = async () => {
+			const response = await fetch(`https://boolean-uk-api-server.fly.dev/KajaPlaszko/contact/1`);
+			const jsonData = await response.json();
+			setAuthor(jsonData);
+		};
+	
+		fetchContact();
+	}, []);
 
 
 	const handleSubmit = (e) => {
@@ -17,7 +25,7 @@ function NewComment({ postId, addComment }) {
 		const newComment = {
 			postId,
 			content: comment.content,
-			contactId,
+			contactId: 1,
 		};
 
 		const url = `https://boolean-uk-api-server.fly.dev/KajaPlaszko/post/${postId}/comment`;

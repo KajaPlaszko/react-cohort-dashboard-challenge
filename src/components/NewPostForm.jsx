@@ -7,31 +7,23 @@ import InitialCircle from './InitialCircle';
 function NewPostForm() {
 	const { addPost } = useContext(PostContext);
 	const [post, setPost] = useState({
-		contactId: "",
+		contactId: 1,
 		title: "",
 		content: "",
 	});
 
-	const [author, setAuthor] = useState({ firstName: "", lastName: "" });
-	const navigate = useNavigate();
+	const [author, setAuthor] = useState(null);
 
+	const navigate = useNavigate();
 	useEffect(() => {
-		if (post.contactId) {
-			fetch(
-				`https://boolean-uk-api-server.fly.dev/KajaPlaszko/post/${post.contactId}`
-			)
-				.then((response) => response.json())
-				.then((data) =>
-					setAuthor({
-						firstName: data.firstName,
-						lastName: data.lastName,
-					})
-				)
-				.catch((error) =>
-					console.error("Error fetching author:", error)
-				);
-		}
-	}, [post.contactId]);
+		const fetchContact = async () => {
+			const response = await fetch(`https://boolean-uk-api-server.fly.dev/KajaPlaszko/contact/1`);
+			const jsonData = await response.json();
+			setAuthor(jsonData);
+		};
+	
+		fetchContact();
+	}, []);
 
 	function handleSubmit(e) {
 		e.preventDefault();
